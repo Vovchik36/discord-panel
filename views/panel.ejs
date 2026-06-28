@@ -2,61 +2,49 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Static Panel</title>
+<title>Panel</title>
 
 <style>
 body {
     margin:0;
+    background: radial-gradient(circle, #1b1f2a, #0f1115);
     font-family:Arial;
-    background:#0f1115;
     color:white;
     display:flex;
     justify-content:center;
 }
 
 .box {
-    width:800px;
+    width:850px;
     margin-top:40px;
     background:#171a21;
     padding:20px;
-    border-radius:15px;
+    border-radius:18px;
 }
 
-input {
+input, select {
     width:100%;
     padding:12px;
     margin-top:10px;
     border:none;
     border-radius:10px;
-    background:#11131a;
+    background:#222633;
     color:white;
-}
-
-label {
-    display:block;
-    margin-top:8px;
-    opacity:0.8;
-    font-size:14px;
 }
 
 button {
     width:100%;
     padding:12px;
-    margin-top:12px;
+    margin-top:10px;
     border:none;
     border-radius:10px;
     background:#5865f2;
     color:white;
     cursor:pointer;
-    transition:0.3s;
-}
-
-button:hover {
-    transform:scale(1.02);
 }
 
 .copy {
-    background:#2ecc71;
+    background:#43b581;
 }
 
 .result {
@@ -66,13 +54,6 @@ button:hover {
     border-radius:10px;
     white-space:pre-line;
 }
-
-.loading {
-    display:none;
-    text-align:center;
-    margin-top:10px;
-    opacity:0.7;
-}
 </style>
 </head>
 
@@ -80,78 +61,65 @@ button:hover {
 
 <div class="box">
 
-<h2>📋 Static System</h2>
+<h2>📋 Генератор шаблона</h2>
 
-<label>Discord ID 1 (свой)</label>
-<input id="id1" placeholder="введи ID">
+<input id="id1" placeholder="Discord ID 1 (123456)">
+<input id="id2" placeholder="Discord ID 2 (123456)">
 
-<label>
-<input type="checkbox" id="save"> Запомнить мой ID
-</label>
+<select id="action">
+    <option>Повышение</option>
+    <option>Понижение</option>
+    <option>Увольнение</option>
+    <option>Назначение</option>
+</select>
 
-<label>Discord ID 2 (другой)</label>
-<input id="id2" placeholder="введи ID">
+<select id="rank">
+<% for(let i=1;i<=15;i++){ %>
+<option><%= i %> ранг</option>
+<% } %>
+</select>
+
+<input id="reason" placeholder="Причина">
 
 <button onclick="gen()">Сгенерировать</button>
-
-<div class="loading" id="load">⏳ Пожалуйста подождите...</div>
-
 <button class="copy" onclick="copy()">Копировать</button>
 
-<div class="result" id="out"></div>
+<div class="result" id="out">Результат...</div>
 
 </div>
 
 <script>
-
-// загрузка сохранённого ID
-window.onload = function() {
-    const saved = localStorage.getItem("id1");
-    if(saved) {
-        document.getElementById("id1").value = saved;
-        document.getElementById("save").checked = true;
-    }
-}
-
 function format(id) {
-    if(!id) return "";
+    if (!id) return "";
     id = id.trim();
-    if(!id.startsWith("<@")) id = `<@${id}>`;
-    return id + " | static";
+    if (!id.startsWith("<@")) {
+        return `<@${id}>`;
+    }
+    return id;
 }
 
 function gen() {
-    document.getElementById("load").style.display = "block";
-    document.getElementById("out").innerText = "";
+    const id1 = format(document.getElementById("id1").value);
+    const id2 = format(document.getElementById("id2").value);
 
-    setTimeout(() => {
+    const action = document.getElementById("action").value;
+    const rank = document.getElementById("rank").value;
+    const reason = document.getElementById("reason").value;
 
-        const id1Val = document.getElementById("id1").value;
-        const id2Val = document.getElementById("id2").value;
+    const text =
+`${id1}
+${id2}
+Действие: ${action}
+Ранг: ${rank}
+Причина: ${reason}`;
 
-        if(document.getElementById("save").checked) {
-            localStorage.setItem("id1", id1Val);
-        } else {
-            localStorage.removeItem("id1");
-        }
-
-        let text = "";
-
-        if(id1Val) text += format(id1Val) + "\n";
-        if(id2Val) text += format(id2Val) + "\n";
-
-        document.getElementById("out").innerText = text;
-
-        document.getElementById("load").style.display = "none";
-
-    }, 1000);
+    document.getElementById("out").innerText = text;
 }
 
 function copy() {
     navigator.clipboard.writeText(document.getElementById("out").innerText);
     alert("Скопировано");
 }
-
 </script>
 
 </body>
