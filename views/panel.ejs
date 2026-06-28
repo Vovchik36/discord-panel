@@ -2,45 +2,56 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Panel</title>
+<title>Vovchik Panel</title>
 
 <style>
 body {
     margin:0;
-    background:#0f1115;
     font-family:Arial;
+    background: linear-gradient(135deg, #0f1115, #1a1d2a);
     color:white;
     display:flex;
     justify-content:center;
 }
 
-.box {
-    width:800px;
+.container {
+    width:850px;
     margin-top:40px;
-    background:#171a21;
-    padding:20px;
-    border-radius:15px;
+    background:rgba(23,26,33,0.9);
+    padding:25px;
+    border-radius:18px;
+    box-shadow:0 0 40px rgba(0,0,0,0.5);
+}
+
+h2 {
+    text-align:center;
+    margin-bottom:20px;
 }
 
 input, select {
     width:100%;
-    padding:10px;
+    padding:12px;
     margin-top:10px;
     border:none;
-    border-radius:8px;
-    background:#222;
+    border-radius:10px;
+    background:#11131a;
     color:white;
 }
 
 button {
     width:100%;
-    padding:10px;
-    margin-top:10px;
+    padding:12px;
+    margin-top:15px;
     border:none;
-    border-radius:8px;
+    border-radius:10px;
     background:#5865f2;
     color:white;
     cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover {
+    transform:scale(1.02);
 }
 
 .copy {
@@ -49,22 +60,31 @@ button {
 
 .result {
     margin-top:15px;
-    padding:10px;
+    padding:12px;
     background:#0d0f14;
-    border-radius:8px;
+    border-radius:10px;
     white-space:pre-line;
+    min-height:60px;
+}
+
+/* loading */
+.loading {
+    display:none;
+    text-align:center;
+    margin-top:10px;
+    opacity:0.8;
 }
 </style>
 </head>
 
 <body>
 
-<div class="box">
+<div class="container">
 
-<h2>📋 Генератор</h2>
+<h2>📋 Кадровая система</h2>
 
-<input id="id1" placeholder="Discord ID 1">
-<input id="id2" placeholder="Discord ID 2">
+<input id="id1" placeholder="Discord ID 1 (свой / static)">
+<input id="id2" placeholder="Discord ID 2 (кого меняешь)">
 
 <select id="action">
     <option>Повышение</option>
@@ -82,9 +102,12 @@ button {
 <input id="reason" placeholder="Причина">
 
 <button onclick="gen()">Сгенерировать</button>
+
+<div class="loading" id="loading">⏳ Пожалуйста подождите...</div>
+
 <button class="copy" onclick="copyText()">Копировать</button>
 
-<div class="result" id="out">Результат...</div>
+<div class="result" id="out">Результат появится тут...</div>
 
 </div>
 
@@ -103,21 +126,29 @@ function format(id) {
 }
 
 function gen() {
-    const id1 = format(document.getElementById("id1").value);
-    const id2 = format(document.getElementById("id2").value);
+    document.getElementById("loading").style.display = "block";
+    document.getElementById("out").innerText = "";
 
-    const action = document.getElementById("action").value;
-    const rank = document.getElementById("rank").value;
-    const reason = document.getElementById("reason").value;
+    setTimeout(() => {
 
-    const text =
+        const id1 = format(document.getElementById("id1").value);
+        const id2 = format(document.getElementById("id2").value);
+
+        const action = document.getElementById("action").value;
+        const rank = document.getElementById("rank").value;
+        const reason = document.getElementById("reason").value;
+
+        const text =
 `${id1}
 ${id2}
 Действие: ${action}
 Ранг: ${rank}
 Причина: ${reason}`;
 
-    document.getElementById("out").innerText = text;
+        document.getElementById("out").innerText = text;
+        document.getElementById("loading").style.display = "none";
+
+    }, 1200);
 }
 
 function copyText() {
