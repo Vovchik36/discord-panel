@@ -7,7 +7,7 @@
 <style>
 body {
     margin:0;
-    background: radial-gradient(circle, #1b1f2a, #0f1115);
+    background:#0f1115;
     font-family:Arial;
     color:white;
     display:flex;
@@ -15,43 +15,43 @@ body {
 }
 
 .box {
-    width:850px;
+    width:800px;
     margin-top:40px;
     background:#171a21;
     padding:20px;
-    border-radius:18px;
+    border-radius:15px;
 }
 
 input, select {
     width:100%;
-    padding:12px;
+    padding:10px;
     margin-top:10px;
     border:none;
-    border-radius:10px;
-    background:#222633;
+    border-radius:8px;
+    background:#222;
     color:white;
 }
 
 button {
     width:100%;
-    padding:12px;
+    padding:10px;
     margin-top:10px;
     border:none;
-    border-radius:10px;
+    border-radius:8px;
     background:#5865f2;
     color:white;
     cursor:pointer;
 }
 
 .copy {
-    background:#43b581;
+    background:#2ecc71;
 }
 
 .result {
     margin-top:15px;
-    padding:12px;
+    padding:10px;
     background:#0d0f14;
-    border-radius:10px;
+    border-radius:8px;
     white-space:pre-line;
 }
 </style>
@@ -61,10 +61,10 @@ button {
 
 <div class="box">
 
-<h2>📋 Генератор шаблона</h2>
+<h2>📋 Генератор</h2>
 
-<input id="id1" placeholder="Discord ID 1 (123456)">
-<input id="id2" placeholder="Discord ID 2 (123456)">
+<input id="id1" placeholder="Discord ID 1">
+<input id="id2" placeholder="Discord ID 2">
 
 <select id="action">
     <option>Повышение</option>
@@ -82,20 +82,24 @@ button {
 <input id="reason" placeholder="Причина">
 
 <button onclick="gen()">Сгенерировать</button>
-<button class="copy" onclick="copy()">Копировать</button>
+<button class="copy" onclick="copyText()">Копировать</button>
 
 <div class="result" id="out">Результат...</div>
 
 </div>
 
 <script>
+
 function format(id) {
     if (!id) return "";
+
     id = id.trim();
+
     if (!id.startsWith("<@")) {
-        return `<@${id}>`;
+        id = `<@${id}>`;
     }
-    return id;
+
+    return id + " | static";
 }
 
 function gen() {
@@ -116,10 +120,11 @@ ${id2}
     document.getElementById("out").innerText = text;
 }
 
-function copy() {
+function copyText() {
     navigator.clipboard.writeText(document.getElementById("out").innerText);
     alert("Скопировано");
 }
+
 </script>
 
 </body>
