@@ -2,33 +2,27 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Vovchik Panel</title>
+<title>Static Panel</title>
 
 <style>
 body {
     margin:0;
     font-family:Arial;
-    background: linear-gradient(135deg, #0f1115, #1a1d2a);
+    background:#0f1115;
     color:white;
     display:flex;
     justify-content:center;
 }
 
-.container {
-    width:850px;
+.box {
+    width:800px;
     margin-top:40px;
-    background:rgba(23,26,33,0.9);
-    padding:25px;
-    border-radius:18px;
-    box-shadow:0 0 40px rgba(0,0,0,0.5);
+    background:#171a21;
+    padding:20px;
+    border-radius:15px;
 }
 
-h2 {
-    text-align:center;
-    margin-bottom:20px;
-}
-
-input, select {
+input {
     width:100%;
     padding:12px;
     margin-top:10px;
@@ -38,10 +32,17 @@ input, select {
     color:white;
 }
 
+label {
+    display:block;
+    margin-top:8px;
+    opacity:0.8;
+    font-size:14px;
+}
+
 button {
     width:100%;
     padding:12px;
-    margin-top:15px;
+    margin-top:12px;
     border:none;
     border-radius:10px;
     background:#5865f2;
@@ -64,94 +65,89 @@ button:hover {
     background:#0d0f14;
     border-radius:10px;
     white-space:pre-line;
-    min-height:60px;
 }
 
-/* loading */
 .loading {
     display:none;
     text-align:center;
     margin-top:10px;
-    opacity:0.8;
+    opacity:0.7;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="box">
 
-<h2>📋 Кадровая система</h2>
+<h2>📋 Static System</h2>
 
-<input id="id1" placeholder="Discord ID 1 (свой / static)">
-<input id="id2" placeholder="Discord ID 2 (кого меняешь)">
+<label>Discord ID 1 (свой)</label>
+<input id="id1" placeholder="введи ID">
 
-<select id="action">
-    <option>Повышение</option>
-    <option>Понижение</option>
-    <option>Увольнение</option>
-    <option>Назначение</option>
-</select>
+<label>
+<input type="checkbox" id="save"> Запомнить мой ID
+</label>
 
-<select id="rank">
-<% for(let i=1;i<=15;i++){ %>
-<option><%= i %> ранг</option>
-<% } %>
-</select>
-
-<input id="reason" placeholder="Причина">
+<label>Discord ID 2 (другой)</label>
+<input id="id2" placeholder="введи ID">
 
 <button onclick="gen()">Сгенерировать</button>
 
-<div class="loading" id="loading">⏳ Пожалуйста подождите...</div>
+<div class="loading" id="load">⏳ Пожалуйста подождите...</div>
 
-<button class="copy" onclick="copyText()">Копировать</button>
+<button class="copy" onclick="copy()">Копировать</button>
 
-<div class="result" id="out">Результат появится тут...</div>
+<div class="result" id="out"></div>
 
 </div>
 
 <script>
 
-function format(id) {
-    if (!id) return "";
-
-    id = id.trim();
-
-    if (!id.startsWith("<@")) {
-        id = `<@${id}>`;
+// загрузка сохранённого ID
+window.onload = function() {
+    const saved = localStorage.getItem("id1");
+    if(saved) {
+        document.getElementById("id1").value = saved;
+        document.getElementById("save").checked = true;
     }
+}
 
+function format(id) {
+    if(!id) return "";
+    id = id.trim();
+    if(!id.startsWith("<@")) id = `<@${id}>`;
     return id + " | static";
 }
 
 function gen() {
-    document.getElementById("loading").style.display = "block";
+    document.getElementById("load").style.display = "block";
     document.getElementById("out").innerText = "";
 
     setTimeout(() => {
 
-        const id1 = format(document.getElementById("id1").value);
-        const id2 = format(document.getElementById("id2").value);
+        const id1Val = document.getElementById("id1").value;
+        const id2Val = document.getElementById("id2").value;
 
-        const action = document.getElementById("action").value;
-        const rank = document.getElementById("rank").value;
-        const reason = document.getElementById("reason").value;
+        if(document.getElementById("save").checked) {
+            localStorage.setItem("id1", id1Val);
+        } else {
+            localStorage.removeItem("id1");
+        }
 
-        const text =
-`${id1}
-${id2}
-Действие: ${action}
-Ранг: ${rank}
-Причина: ${reason}`;
+        let text = "";
+
+        if(id1Val) text += format(id1Val) + "\n";
+        if(id2Val) text += format(id2Val) + "\n";
 
         document.getElementById("out").innerText = text;
-        document.getElementById("loading").style.display = "none";
 
-    }, 1200);
+        document.getElementById("load").style.display = "none";
+
+    }, 1000);
 }
 
-function copyText() {
+function copy() {
     navigator.clipboard.writeText(document.getElementById("out").innerText);
     alert("Скопировано");
 }
