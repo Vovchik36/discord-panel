@@ -11,52 +11,54 @@ body{
     display:flex;
     justify-content:center;
     align-items:center;
-    background:linear-gradient(135deg,#0b0c10,#11131a);
+    background:linear-gradient(135deg,#0b1020,#121a2a);
     font-family:Arial;
     overflow:hidden;
 }
 
-/* мягкий фон */
+/* мягкое свечение */
 body::before{
     content:"";
     position:absolute;
     width:200%;
     height:200%;
-    background:radial-gradient(circle,#3b3b4a33,#0000);
-    animation:move 12s infinite alternate ease-in-out;
+    background:radial-gradient(circle at 30% 30%, rgba(90,120,200,0.15), transparent 40%),
+               radial-gradient(circle at 70% 70%, rgba(120,90,200,0.12), transparent 45%);
+    animation:move 14s infinite alternate ease-in-out;
 }
 
 @keyframes move{
-    from{transform:translate(-10%,-10%)}
-    to{transform:translate(10%,10%)}
+    from{transform:translate(-5%,-5%)}
+    to{transform:translate(5%,5%)}
 }
 
 .box{
     position:relative;
-    width:320px;
+    width:340px;
     padding:28px;
-    border-radius:14px;
-    background:rgba(20,22,28,0.85);
-    backdrop-filter:blur(10px);
-    box-shadow:0 0 20px rgba(0,0,0,0.6);
+    border-radius:16px;
+    background:rgba(18,22,35,0.85);
+    backdrop-filter:blur(12px);
+    box-shadow:0 10px 30px rgba(0,0,0,0.6);
     text-align:center;
     animation:fade .5s ease;
+    border:1px solid rgba(120,140,200,0.15);
 }
 
 @keyframes fade{
-    from{opacity:0; transform:translateY(10px)}
+    from{opacity:0; transform:translateY(12px)}
     to{opacity:1; transform:translateY(0)}
 }
 
 h2{
-    color:#d6d6d6;
+    color:#cfd8ff;
     font-weight:500;
     margin-bottom:6px;
 }
 
 .dev{
     font-size:12px;
-    color:#8a8a8a;
+    color:#8fa0c2;
     margin-bottom:18px;
 }
 
@@ -64,17 +66,17 @@ button{
     width:100%;
     padding:12px;
     border:none;
-    border-radius:10px;
-    background:#2a2f3a;
-    color:#e6e6e6;
+    border-radius:12px;
+    background:linear-gradient(90deg,#2c3e66,#3b4d7a);
+    color:#e8ecff;
     font-weight:500;
     cursor:pointer;
     transition:.2s;
 }
 
 button:hover{
-    background:#343a48;
-    transform:scale(1.02);
+    transform:scale(1.03);
+    background:linear-gradient(90deg,#344a7a,#415a92);
 }
 
 button:active{
@@ -84,7 +86,7 @@ button:active{
 .small{
     margin-top:12px;
     font-size:12px;
-    color:#777;
+    color:#7f8fb3;
 }
 </style>
 
@@ -104,13 +106,12 @@ button:active{
 
 </div>
 
-<!-- спокойный звук -->
 <audio id="clickSound" src="https://www.soundjay.com/buttons/sounds/button-09.mp3"></audio>
 
 <script>
 function clickSound(){
     const audio = document.getElementById("clickSound");
-    audio.volume = 0.3;
+    audio.volume = 0.25;
     audio.play();
 }
 </script>
