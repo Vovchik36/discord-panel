@@ -8,55 +8,54 @@ const server = http.createServer(app);
 const io = new Server(server);
 
 app.set("view engine", "ejs");
-
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-let logged = false;
 let online = 0;
+let currentUser = null;
 
-/* ---------- SOCKET.IO ---------- */
-
+/* -------- ONLINE -------- */
 io.on("connection", (socket) => {
     online++;
     io.emit("online", online);
 
     socket.on("disconnect", () => {
         online--;
-
-        if (online < 0) {
-            online = 0;
-        }
-
+        if (online < 0) online = 0;
         io.emit("online", online);
     });
 });
 
-/* ---------- ВХОД ---------- */
-
+/* -------- LOGIN -------- */
 app.get("/", (req, res) => {
     res.render("login");
 });
 
 app.post("/login", (req, res) => {
-    logged = true;
+    const name = req.body.name || "User";
+
+    currentUser = {
+        id: Date.now(),
+        name
+    };
+
     res.redirect("/panel");
 });
 
-/* ---------- ПАНЕЛЬ ---------- */
-
+/* -------- PANEL -------- */
 app.get("/panel", (req, res) => {
-    if (!logged) {
-        return res.redirect("/");
-    }
-
-    res.render("panel");
+    if (!currentUser) return res.redirect("/error");
+    res.render("panel", { user: currentUser });
 });
 
-/* ---------- ЗАПУСК ---------- */
+/* -------- ERROR -------- */
+app.get("/error", (req, res) => {
+    res.render("error");
+});
 
+/* -------- START -------- */
 const PORT = process.env.PORT || 3000;
 
 server.listen(PORT, () => {
-    console.log(`Сервер запущен: http://localhost:${PORT}`);
+    console.log(`http://localhost:${PORT}`);
 });
