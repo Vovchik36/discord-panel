@@ -21,14 +21,12 @@ body{
     padding:24px;
     border-radius:16px;
     backdrop-filter:blur(12px);
-    box-shadow:0 10px 30px rgba(0,0,0,0.6);
 }
 
-/* ---------- LOADING ---------- */
+/* loading */
 #loadingScreen{
     position:fixed;
-    top:0;left:0;
-    width:100%;height:100%;
+    inset:0;
     background:#0b1020;
     display:flex;
     flex-direction:column;
@@ -57,11 +55,9 @@ body{
     to{width:100%}
 }
 
-.hidden{
-    display:none;
-}
+.hidden{display:none;}
 
-/* ---------- UI ---------- */
+/* ui */
 h2{
     text-align:center;
     color:#cfd8ff;
@@ -95,7 +91,7 @@ button:hover{
     white-space:pre-wrap;
 }
 
-/* ---------- ONLINE ---------- */
+/* online */
 .online{
     margin-top:20px;
     text-align:center;
@@ -106,7 +102,6 @@ button:hover{
 </head>
 <body>
 
-<!-- LOADING -->
 <div id="loadingScreen">
     <div>Загрузка системы...</div>
     <div class="bar"><div class="fill"></div></div>
@@ -116,46 +111,42 @@ button:hover{
 
 <h2>Кадровая система</h2>
 
-<!-- ВЫБОР РАЗДЕЛА -->
 <select id="section" onchange="switchForm()">
     <option value="">Выберите раздел</option>
     <option value="ka">Кадровый аудит</option>
     <option value="spec">Отчёт спецухи</option>
 </select>
 
-<!-- ===== КАДРОВЫЙ АУДИТ ===== -->
+<!-- KA -->
 <div id="kaForm" style="display:none">
+    <input id="id1" placeholder="Discord ID (свой)">
+    <input id="st1" placeholder="Static (свой)">
+    <input id="id2" placeholder="Discord ID (другой)">
+    <input id="st2" placeholder="Static (другой)">
 
-<input id="id1" placeholder="Discord ID (свой)">
-<input id="st1" placeholder="Static (свой)">
-<input id="id2" placeholder="Discord ID (другой)">
-<input id="st2" placeholder="Static (другой)">
+    <select id="action">
+        <option>Повышение</option>
+        <option>Понижение</option>
+        <option>Увольнение</option>
+        <option>Назначение</option>
+    </select>
 
-<select id="action">
-<option>Повышение</option>
-<option>Понижение</option>
-<option>Увольнение</option>
-<option>Назначение</option>
-</select>
-
-<input id="reason" placeholder="Причина">
-
+    <input id="reason" placeholder="Причина">
 </div>
 
-<!-- ===== СПЕЦУХА ===== -->
+<!-- SPEC -->
 <div id="specForm" style="display:none">
 
-<input placeholder="Кто выдал">
-<input placeholder="Кто получил">
-<input placeholder="Ссылка на одобрение">
-<input placeholder="Что получаете">
-<input placeholder="Серийный номер">
-<input placeholder="Ссылка на скриншот">
+    <input id="spec1" placeholder="Кто выдал (ID)">
+    <input id="spec2" placeholder="Кто получил (ID)">
+    <input placeholder="Ссылка на одобрение">
+    <input placeholder="Что получаете">
+    <input placeholder="Серийный номер">
+    <input placeholder="Скриншот">
 
 </div>
 
 <button onclick="gen()">Сгенерировать</button>
-<button onclick="copy()">Копировать</button>
 
 <div id="out"></div>
 
@@ -170,21 +161,19 @@ button:hover{
 const socket = io();
 socket.on("online",(c)=> onlineCount.textContent = c);
 
-/* ---------- LOADING ---------- */
+/* loading */
 setTimeout(()=>{
-    document.getElementById("loadingScreen").style.display="none";
-    document.getElementById("app").classList.remove("hidden");
+    loadingScreen.style.display="none";
+    app.classList.remove("hidden");
 },2000);
 
-/* ---------- SWITCH ---------- */
+/* switch */
 function switchForm(){
-    let v = section.value;
-
-    kaForm.style.display = v==="ka" ? "block" : "none";
-    specForm.style.display = v==="spec" ? "block" : "none";
+    kaForm.style.display = section.value==="ka" ? "block" : "none";
+    specForm.style.display = section.value==="spec" ? "block" : "none";
 }
 
-/* ---------- GENERATE ---------- */
+/* generate */
 function gen(){
 
     if(section.value==="ka"){
@@ -199,24 +188,17 @@ function gen(){
     }
 
     if(section.value==="spec"){
-        let f = document.querySelectorAll("#specForm input");
-
         out.textContent =
 `ОТЧЁТ СПЕЦУХИ
 
-Выдал: ${f[0].value}
-Получил: ${f[1].value}
-Одобрение: ${f[2].value}
-Что получаете: ${f[3].value}
-Серийный номер: ${f[4].value}
-Скриншот: ${f[5].value}`;
-    }
-}
+<@${spec1.value}> | -
+<@${spec2.value}> | -
 
-/* ---------- COPY ---------- */
-function copy(){
-    navigator.clipboard.writeText(out.textContent);
-    alert("Скопировано!");
+Одобрение: ${document.querySelectorAll("#specForm input")[2].value}
+Что получаете: ${document.querySelectorAll("#specForm input")[3].value}
+Серийный номер: ${document.querySelectorAll("#specForm input")[4].value}
+Скриншот: ${document.querySelectorAll("#specForm input")[5].value}`;
+    }
 }
 </script>
 
