@@ -3,26 +3,103 @@
 <head>
 <meta charset="UTF-8">
 <title>Кадровая панель</title>
+
 <style>
-body{margin:0;font-family:Arial;background:#0f1115;color:#fff;display:flex;justify-content:center}
-.box{width:820px;margin:40px;background:#171a21;padding:24px;border-radius:16px}
-h2{text-align:center}
-label{display:block;margin-top:14px}
-input,select,button{width:100%;padding:12px;border:none;border-radius:10px;margin-top:6px;background:#232833;color:#fff}
-button{background:#5865F2;cursor:pointer}
-.copy{background:#2ecc71;margin-top:8px}
-#loading{display:none;margin-top:10px}
-#out{margin-top:15px;background:#10131a;padding:14px;border-radius:10px;white-space:pre-wrap}
-.rem{display:flex;align-items:center;gap:8px;margin-top:8px}
-.rem input{width:auto}
+body{
+    margin:0;
+    font-family:Arial;
+    background:#0f1115;
+    color:#fff;
+    display:flex;
+    justify-content:center;
+}
+
+.box{
+    width:820px;
+    margin:40px;
+    background:#171a21;
+    padding:24px;
+    border-radius:16px;
+}
+
+h2{
+    text-align:center;
+}
+
+label{
+    display:block;
+    margin-top:14px;
+}
+
+input,select,button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    margin-top:6px;
+    background:#232833;
+    color:#fff;
+    box-sizing:border-box;
+}
+
+button{
+    background:#5865F2;
+    cursor:pointer;
+    transition:.2s;
+}
+
+button:hover{
+    opacity:.9;
+}
+
+.copy{
+    background:#2ecc71;
+    margin-top:8px;
+}
+
+#loading{
+    display:none;
+    margin-top:10px;
+}
+
+#out{
+    margin-top:15px;
+    background:#10131a;
+    padding:14px;
+    border-radius:10px;
+    white-space:pre-wrap;
+}
+
+.rem{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-top:8px;
+}
+
+.rem input{
+    width:auto;
+}
+
+.online-box{
+    margin-top:20px;
+    text-align:center;
+    color:#00ff66;
+    font-size:18px;
+    font-weight:bold;
+}
 </style>
+
 </head>
 <body>
+
 <div class="box">
+
 <h2>Кадровый аудит</h2>
 
 <label>Discord ID (свой)</label>
 <input id="id1" placeholder="Введите свой Discord ID">
+
 <div class="rem">
 <input type="checkbox" id="remember">
 <span>Запомнить мой Discord ID</span>
@@ -47,47 +124,102 @@ button{background:#5865F2;cursor:pointer}
 
 <label>Ранг</label>
 <select id="rank">
-<option>1 ранг</option><option>2 ранг</option><option>3 ранг</option>
-<option>4 ранг</option><option>5 ранг</option><option>6 ранг</option>
-<option>7 ранг</option><option>8 ранг</option><option>9 ранг</option>
-<option>10 ранг</option><option>11 ранг</option><option>12 ранг</option>
-<option>13 ранг</option><option>14 ранг</option><option>15 ранг</option>
+<option>1 ранг</option>
+<option>2 ранг</option>
+<option>3 ранг</option>
+<option>4 ранг</option>
+<option>5 ранг</option>
+<option>6 ранг</option>
+<option>7 ранг</option>
+<option>8 ранг</option>
+<option>9 ранг</option>
+<option>10 ранг</option>
+<option>11 ранг</option>
+<option>12 ранг</option>
+<option>13 ранг</option>
+<option>14 ранг</option>
+<option>15 ранг</option>
 </select>
 
 <label>Причина</label>
 <input id="reason">
 
 <button onclick="gen()">Сгенерировать</button>
+
 <div id="loading">Пожалуйста, подождите...</div>
+
 <button class="copy" onclick="copyText()">Копировать</button>
 
 <div id="out"></div>
+
+<div class="online-box">
+🟢 Онлайн на сайте:
+<span id="onlineCount">0</span>
+</div>
+
 </div>
 
 <script>
-window.onload=()=>{
- const a=localStorage.getItem("myDiscordId");
- if(a){id1.value=a;remember.checked=true;}
-}
+window.onload = () => {
+
+    const saved = localStorage.getItem("myDiscordId");
+
+    if(saved){
+        document.getElementById("id1").value = saved;
+        document.getElementById("remember").checked = true;
+    }
+
+};
+
 function gen(){
- loading.style.display="block";
- out.textContent="";
- setTimeout(()=>{
-   if(remember.checked) localStorage.setItem("myDiscordId",id1.value);
-   else localStorage.removeItem("myDiscordId");
-   out.textContent=`<@${id1.value}> | ${st1.value}
+
+    loading.style.display = "block";
+    out.textContent = "";
+
+    setTimeout(()=>{
+
+        if(remember.checked){
+            localStorage.setItem("myDiscordId", id1.value);
+        }else{
+            localStorage.removeItem("myDiscordId");
+        }
+
+        out.textContent =
+`<@${id1.value}> | ${st1.value}
 <@${id2.value}> | ${st2.value}
 
 Действие: ${action.value}
 Ранг: ${rank.value}
 Причина: ${reason.value}`;
-   loading.style.display="none";
- },1000);
+
+        loading.style.display = "none";
+
+    },1000);
+
 }
+
 function copyText(){
- navigator.clipboard.writeText(out.textContent);
- alert("Скопировано!");
+
+    navigator.clipboard.writeText(out.textContent);
+
+    alert("Скопировано!");
+
 }
 </script>
+
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+
+const socket = io();
+
+socket.on("online",(count)=>{
+
+    document.getElementById("onlineCount").textContent = count;
+
+});
+
+</script>
+
 </body>
 </html>
