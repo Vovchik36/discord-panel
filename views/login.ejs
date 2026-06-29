@@ -11,75 +11,80 @@ body{
     display:flex;
     justify-content:center;
     align-items:center;
-    background:linear-gradient(135deg,#000,#1a001f);
+    background:linear-gradient(135deg,#0b0c10,#11131a);
     font-family:Arial;
     overflow:hidden;
 }
 
-/* фон анимация */
+/* мягкий фон */
 body::before{
     content:"";
     position:absolute;
     width:200%;
     height:200%;
-    background:radial-gradient(circle,#ff00aa33,#0000);
-    animation:move 8s infinite alternate;
+    background:radial-gradient(circle,#3b3b4a33,#0000);
+    animation:move 12s infinite alternate ease-in-out;
 }
 
 @keyframes move{
-    from{transform:translate(-20%,-20%)}
-    to{transform:translate(20%,20%)}
+    from{transform:translate(-10%,-10%)}
+    to{transform:translate(10%,10%)}
 }
 
 .box{
     position:relative;
     width:320px;
-    padding:30px;
-    border-radius:18px;
-    background:rgba(255,255,255,0.05);
-    backdrop-filter:blur(12px);
-    box-shadow:0 0 30px rgba(255,0,150,0.25);
+    padding:28px;
+    border-radius:14px;
+    background:rgba(20,22,28,0.85);
+    backdrop-filter:blur(10px);
+    box-shadow:0 0 20px rgba(0,0,0,0.6);
     text-align:center;
-    animation:pop .6s ease;
+    animation:fade .5s ease;
 }
 
-@keyframes pop{
-    from{transform:scale(0.8);opacity:0}
-    to{transform:scale(1);opacity:1}
+@keyframes fade{
+    from{opacity:0; transform:translateY(10px)}
+    to{opacity:1; transform:translateY(0)}
 }
 
 h2{
-    color:#ff4fd8;
-    margin-bottom:10px;
+    color:#d6d6d6;
+    font-weight:500;
+    margin-bottom:6px;
 }
 
 .dev{
     font-size:12px;
-    color:#aaa;
-    margin-bottom:20px;
+    color:#8a8a8a;
+    margin-bottom:18px;
 }
 
 button{
     width:100%;
-    padding:14px;
+    padding:12px;
     border:none;
     border-radius:10px;
-    background:linear-gradient(90deg,#ff00aa,#7c3aed);
-    color:#fff;
-    font-weight:bold;
+    background:#2a2f3a;
+    color:#e6e6e6;
+    font-weight:500;
     cursor:pointer;
     transition:.2s;
 }
 
 button:hover{
-    transform:scale(1.05);
-    box-shadow:0 0 15px #ff4fd8;
+    background:#343a48;
+    transform:scale(1.02);
+}
+
+button:active{
+    transform:scale(0.98);
 }
 
 .small{
     margin-top:12px;
     font-size:12px;
-    color:#666;
+    color:#777;
 }
 </style>
 
@@ -95,16 +100,18 @@ button:hover{
     <button onclick="clickSound()">Войти в систему</button>
 </form>
 
-<div class="small">Нажмите для продолжения</div>
+<div class="small">Добро пожаловать</div>
 
 </div>
 
-<!-- звук -->
-<audio id="clickSound" src="https://www.soundjay.com/buttons/sounds/button-16.mp3"></audio>
+<!-- спокойный звук -->
+<audio id="clickSound" src="https://www.soundjay.com/buttons/sounds/button-09.mp3"></audio>
 
 <script>
 function clickSound(){
-    document.getElementById("clickSound").play();
+    const audio = document.getElementById("clickSound");
+    audio.volume = 0.3;
+    audio.play();
 }
 </script>
 
