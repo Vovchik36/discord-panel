@@ -14,16 +14,17 @@ body{
     justify-content:center;
 }
 
+/* BOX */
 .box{
     width:850px;
     margin:40px;
-    background:rgba(18,22,35,0.85);
+    background:rgba(18,22,35,0.88);
     padding:24px;
     border-radius:16px;
     backdrop-filter:blur(12px);
 }
 
-/* loading */
+/* LOADING */
 #loadingScreen{
     position:fixed;
     inset:0;
@@ -36,7 +37,7 @@ body{
 }
 
 .bar{
-    width:220px;
+    width:240px;
     height:6px;
     background:#1f2a44;
     border-radius:10px;
@@ -57,7 +58,7 @@ body{
 
 .hidden{display:none;}
 
-/* ui */
+/* UI */
 h2{
     text-align:center;
     color:#cfd8ff;
@@ -71,6 +72,7 @@ select,input,button{
     border-radius:10px;
     background:#121a2a;
     color:#fff;
+    outline:none;
 }
 
 button{
@@ -91,7 +93,7 @@ button:hover{
     white-space:pre-wrap;
 }
 
-/* online */
+/* ONLINE */
 .online{
     margin-top:20px;
     text-align:center;
@@ -102,6 +104,7 @@ button:hover{
 </head>
 <body>
 
+<!-- LOADING -->
 <div id="loadingScreen">
     <div>Загрузка системы...</div>
     <div class="bar"><div class="fill"></div></div>
@@ -111,6 +114,7 @@ button:hover{
 
 <h2>Кадровая система</h2>
 
+<!-- SELECT -->
 <select id="section" onchange="switchForm()">
     <option value="">Выберите раздел</option>
     <option value="ka">Кадровый аудит</option>
@@ -119,30 +123,50 @@ button:hover{
 
 <!-- KA -->
 <div id="kaForm" style="display:none">
-    <input id="id1" placeholder="Discord ID (свой)">
-    <input id="st1" placeholder="Static (свой)">
-    <input id="id2" placeholder="Discord ID (другой)">
-    <input id="st2" placeholder="Static (другой)">
 
-    <select id="action">
-        <option>Повышение</option>
-        <option>Понижение</option>
-        <option>Увольнение</option>
-        <option>Назначение</option>
-    </select>
+<input id="id1" placeholder="Discord ID (свой)">
+<input id="st1" placeholder="Static (свой)">
+<input id="id2" placeholder="Discord ID (другой)">
+<input id="st2" placeholder="Static (другой)">
 
-    <input id="reason" placeholder="Причина">
+<select id="rank">
+<option>1 ранг</option>
+<option>2 ранг</option>
+<option>3 ранг</option>
+<option>4 ранг</option>
+<option>5 ранг</option>
+<option>6 ранг</option>
+<option>7 ранг</option>
+<option>8 ранг</option>
+<option>9 ранг</option>
+<option>10 ранг</option>
+<option>11 ранг</option>
+<option>12 ранг</option>
+<option>13 ранг</option>
+<option>14 ранг</option>
+<option>15 ранг</option>
+</select>
+
+<select id="action">
+<option>Повышение</option>
+<option>Понижение</option>
+<option>Увольнение</option>
+<option>Назначение</option>
+</select>
+
+<input id="reason" placeholder="Причина">
+
 </div>
 
 <!-- SPEC -->
 <div id="specForm" style="display:none">
 
-    <input id="spec1" placeholder="Кто выдал (ID)">
-    <input id="spec2" placeholder="Кто получил (ID)">
-    <input placeholder="Ссылка на одобрение">
-    <input placeholder="Что получаете">
-    <input placeholder="Серийный номер">
-    <input placeholder="Скриншот">
+<input id="spec1" placeholder="Кто выдал (ID)">
+<input id="spec2" placeholder="Кто получил (ID)">
+<input placeholder="Ссылка на одобрение">
+<input placeholder="Что получаете">
+<input placeholder="Серийный номер">
+<input placeholder="Скриншот">
 
 </div>
 
@@ -167,7 +191,7 @@ setTimeout(()=>{
     app.classList.remove("hidden");
 },2000);
 
-/* switch */
+/* switch forms */
 function switchForm(){
     kaForm.style.display = section.value==="ka" ? "block" : "none";
     specForm.style.display = section.value==="spec" ? "block" : "none";
@@ -183,6 +207,7 @@ function gen(){
 <@${id1.value}> | ${st1.value}
 <@${id2.value}> | ${st2.value}
 
+Ранг: ${rank.value}
 Действие: ${action.value}
 Причина: ${reason.value}`;
     }
