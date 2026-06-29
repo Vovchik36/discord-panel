@@ -14,7 +14,6 @@ body{
     justify-content:center;
 }
 
-/* BOX */
 .box{
     width:850px;
     margin:40px;
@@ -24,7 +23,7 @@ body{
     backdrop-filter:blur(12px);
 }
 
-/* LOADING */
+/* loading */
 #loadingScreen{
     position:fixed;
     inset:0;
@@ -93,11 +92,16 @@ button:hover{
     white-space:pre-wrap;
 }
 
-/* ONLINE */
+/* online */
 .online{
     margin-top:20px;
     text-align:center;
     color:#9fb3ff;
+}
+
+/* copy buttons */
+.copyBtn{
+    background:linear-gradient(90deg,#3b4d7a,#4f6ef7);
 }
 </style>
 
@@ -114,7 +118,6 @@ button:hover{
 
 <h2>Кадровая система</h2>
 
-<!-- SELECT -->
 <select id="section" onchange="switchForm()">
     <option value="">Выберите раздел</option>
     <option value="ka">Кадровый аудит</option>
@@ -156,6 +159,8 @@ button:hover{
 
 <input id="reason" placeholder="Причина">
 
+<button class="copyBtn" onclick="copyKA()">Копировать КА</button>
+
 </div>
 
 <!-- SPEC -->
@@ -167,6 +172,8 @@ button:hover{
 <input placeholder="Что получаете">
 <input placeholder="Серийный номер">
 <input placeholder="Скриншот">
+
+<button class="copyBtn" onclick="copySPEC()">Копировать отчёт</button>
 
 </div>
 
@@ -191,7 +198,7 @@ setTimeout(()=>{
     app.classList.remove("hidden");
 },2000);
 
-/* switch forms */
+/* switch */
 function switchForm(){
     kaForm.style.display = section.value==="ka" ? "block" : "none";
     specForm.style.display = section.value==="spec" ? "block" : "none";
@@ -224,6 +231,17 @@ function gen(){
 Серийный номер: ${document.querySelectorAll("#specForm input")[4].value}
 Скриншот: ${document.querySelectorAll("#specForm input")[5].value}`;
     }
+}
+
+/* COPY */
+function copyKA(){
+    navigator.clipboard.writeText(out.textContent);
+    alert("КА скопирован!");
+}
+
+function copySPEC(){
+    navigator.clipboard.writeText(out.textContent);
+    alert("Отчёт скопирован!");
 }
 </script>
 
