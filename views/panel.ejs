@@ -23,7 +23,7 @@ body{
     backdrop-filter:blur(12px);
 }
 
-/* loading */
+/* LOADING */
 #loadingScreen{
     position:fixed;
     inset:0;
@@ -99,7 +99,6 @@ button:hover{
     color:#9fb3ff;
 }
 
-/* copy buttons */
 .copyBtn{
     background:linear-gradient(90deg,#3b4d7a,#4f6ef7);
 }
@@ -159,7 +158,7 @@ button:hover{
 
 <input id="reason" placeholder="Причина">
 
-<button class="copyBtn" onclick="copyKA()">Копировать КА</button>
+<button class="copyBtn" onclick="copyKA()">Копировать</button>
 
 </div>
 
@@ -173,7 +172,7 @@ button:hover{
 <input placeholder="Серийный номер">
 <input placeholder="Скриншот">
 
-<button class="copyBtn" onclick="copySPEC()">Копировать отчёт</button>
+<button class="copyBtn" onclick="copySPEC()">Копировать</button>
 
 </div>
 
@@ -209,9 +208,7 @@ function gen(){
 
     if(section.value==="ka"){
         out.textContent =
-
-
-<@${id1.value}> | ${st1.value}
+`<@${id1.value}> | ${st1.value}
 <@${id2.value}> | ${st2.value}
 
 Ранг: ${rank.value}
@@ -221,9 +218,7 @@ function gen(){
 
     if(section.value==="spec"){
         out.textContent =
-`ОТЧЁТ СПЕЦУХИ
-
-<@${spec1.value}> | -
+`<@${spec1.value}> | -
 <@${spec2.value}> | -
 
 Одобрение: ${document.querySelectorAll("#specForm input")[2].value}
@@ -233,15 +228,15 @@ function gen(){
     }
 }
 
-/* COPY */
+/* copy */
 function copyKA(){
     navigator.clipboard.writeText(out.textContent);
-    alert("КА скопирован!");
+    alert("Скопировано!");
 }
 
 function copySPEC(){
     navigator.clipboard.writeText(out.textContent);
-    alert("Отчёт скопирован!");
+    alert("Скопировано!");
 }
 </script>
 
