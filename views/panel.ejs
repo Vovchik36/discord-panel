@@ -20,10 +20,9 @@ body{
     background:rgba(18,22,35,0.88);
     padding:24px;
     border-radius:16px;
-    backdrop-filter:blur(12px);
 }
 
-/* LOADING */
+/* loading */
 #loadingScreen{
     position:fixed;
     inset:0;
@@ -58,10 +57,7 @@ body{
 .hidden{display:none;}
 
 /* UI */
-h2{
-    text-align:center;
-    color:#cfd8ff;
-}
+h2{text-align:center;color:#cfd8ff}
 
 select,input,button{
     width:100%;
@@ -71,17 +67,21 @@ select,input,button{
     border-radius:10px;
     background:#121a2a;
     color:#fff;
-    outline:none;
 }
 
 button{
     background:linear-gradient(90deg,#2c3e66,#3b4d7a);
     cursor:pointer;
-    transition:.2s;
 }
 
-button:hover{
-    transform:scale(1.02);
+/* checkbox row */
+.row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-top:8px;
+    font-size:13px;
+    color:#9fb3ff;
 }
 
 #out{
@@ -91,23 +91,11 @@ button:hover{
     border-radius:10px;
     white-space:pre-wrap;
 }
-
-/* online */
-.online{
-    margin-top:20px;
-    text-align:center;
-    color:#9fb3ff;
-}
-
-.copyBtn{
-    background:linear-gradient(90deg,#3b4d7a,#4f6ef7);
-}
 </style>
 
 </head>
 <body>
 
-<!-- LOADING -->
 <div id="loadingScreen">
     <div>Загрузка системы...</div>
     <div class="bar"><div class="fill"></div></div>
@@ -127,7 +115,17 @@ button:hover{
 <div id="kaForm" style="display:none">
 
 <input id="id1" placeholder="Discord ID (свой)">
+<div class="row">
+<input type="checkbox" id="saveId1">
+<span>Запомнить ID</span>
+</div>
+
 <input id="st1" placeholder="Static (свой)">
+<div class="row">
+<input type="checkbox" id="saveSt1">
+<span>Запомнить Static</span>
+</div>
+
 <input id="id2" placeholder="Discord ID (другой)">
 <input id="st2" placeholder="Static (другой)">
 
@@ -158,7 +156,7 @@ button:hover{
 
 <input id="reason" placeholder="Причина">
 
-<button class="copyBtn" onclick="copyKA()">Копировать</button>
+<button onclick="gen()">Сгенерировать</button>
 
 </div>
 
@@ -167,34 +165,30 @@ button:hover{
 
 <input id="spec1" placeholder="Кто выдал (ID)">
 <input id="spec2" placeholder="Кто получил (ID)">
-<input placeholder="Ссылка на одобрение">
-<input placeholder="Что получаете">
-<input placeholder="Серийный номер">
-<input placeholder="Скриншот">
-
-<button class="copyBtn" onclick="copySPEC()">Копировать</button>
-
-</div>
+<input id="spec3" placeholder="Ссылка на одобрение">
+<input id="spec4" placeholder="Что получаете">
+<input id="spec5" placeholder="Серийный номер">
+<input id="spec6" placeholder="Скриншот">
 
 <button onclick="gen()">Сгенерировать</button>
 
-<div id="out"></div>
-
-<div class="online">
-🟢 Онлайн: <span id="onlineCount">0</span>
 </div>
+
+<div id="out"></div>
 
 </div>
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
 const socket = io();
-socket.on("online",(c)=> onlineCount.textContent = c);
+socket.on("online",(c)=> {});
 
 /* loading */
 setTimeout(()=>{
     loadingScreen.style.display="none";
     app.classList.remove("hidden");
+
+    loadData();
 },2000);
 
 /* switch */
@@ -202,6 +196,20 @@ function switchForm(){
     kaForm.style.display = section.value==="ka" ? "block" : "none";
     specForm.style.display = section.value==="spec" ? "block" : "none";
 }
+
+/* SAVE / LOAD */
+function loadData(){
+    if(localStorage.getItem("id1")) id1.value = localStorage.getItem("id1");
+    if(localStorage.getItem("st1")) st1.value = localStorage.getItem("st1");
+}
+
+id1.oninput = ()=> {
+    if(saveId1.checked) localStorage.setItem("id1", id1.value);
+};
+
+st1.oninput = ()=> {
+    if(saveSt1.checked) localStorage.setItem("st1", st1.value);
+};
 
 /* generate */
 function gen(){
@@ -221,22 +229,11 @@ function gen(){
 `<@${spec1.value}> | -
 <@${spec2.value}> | -
 
-Одобрение: ${document.querySelectorAll("#specForm input")[2].value}
-Что получаете: ${document.querySelectorAll("#specForm input")[3].value}
-Серийный номер: ${document.querySelectorAll("#specForm input")[4].value}
-Скриншот: ${document.querySelectorAll("#specForm input")[5].value}`;
+Одобрение: ${spec3.value}
+Что получаете: ${spec4.value}
+Серийный номер: ${spec5.value}
+Скриншот: ${spec6.value}`;
     }
-}
-
-/* copy */
-function copyKA(){
-    navigator.clipboard.writeText(out.textContent);
-    alert("Скопировано!");
-}
-
-function copySPEC(){
-    navigator.clipboard.writeText(out.textContent);
-    alert("Скопировано!");
 }
 </script>
 
