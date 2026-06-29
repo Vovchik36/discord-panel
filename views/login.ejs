@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>Login</title>
+<title>Вход</title>
 
 <style>
 body{
@@ -16,13 +16,30 @@ body{
     overflow:hidden;
 }
 
+/* фон анимация */
+body::before{
+    content:"";
+    position:absolute;
+    width:200%;
+    height:200%;
+    background:radial-gradient(circle,#ff00aa33,#0000);
+    animation:move 8s infinite alternate;
+}
+
+@keyframes move{
+    from{transform:translate(-20%,-20%)}
+    to{transform:translate(20%,20%)}
+}
+
 .box{
+    position:relative;
+    width:340px;
+    padding:28px;
+    border-radius:18px;
     background:rgba(255,255,255,0.05);
-    padding:30px;
-    border-radius:16px;
-    width:320px;
-    backdrop-filter:blur(10px);
-    box-shadow:0 0 30px rgba(255,0,150,0.3);
+    backdrop-filter:blur(12px);
+    box-shadow:0 0 30px rgba(255,0,150,0.25);
+    text-align:center;
     animation:pop .6s ease;
 }
 
@@ -33,17 +50,30 @@ body{
 
 h2{
     color:#ff4fd8;
-    text-align:center;
+    margin-bottom:5px;
+}
+
+.dev{
+    font-size:12px;
+    color:#aaa;
+    margin-bottom:15px;
 }
 
 input{
     width:100%;
     padding:12px;
-    margin-top:15px;
     border:none;
     border-radius:10px;
     background:#111;
     color:#fff;
+    outline:none;
+    margin-top:10px;
+    transition:.2s;
+}
+
+input:focus{
+    box-shadow:0 0 10px #ff4fd8;
+    transform:scale(1.02);
 }
 
 button{
@@ -53,69 +83,39 @@ button{
     border:none;
     border-radius:10px;
     background:linear-gradient(90deg,#ff00aa,#7c3aed);
-    color:white;
+    color:#fff;
     font-weight:bold;
     cursor:pointer;
     transition:.2s;
 }
 
 button:hover{
-    transform:scale(1.03);
+    transform:scale(1.05);
+    box-shadow:0 0 15px #ff4fd8;
 }
 
-.loader{
-    position:fixed;
-    width:100%;
-    height:100%;
-    background:#000;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    flex-direction:column;
-    color:#ff4fd8;
-    animation:fadeOut 2s forwards;
-    animation-delay:1.5s;
-}
-
-.bar{
-    width:200px;
-    height:6px;
-    background:#222;
-    border-radius:10px;
-    overflow:hidden;
+.small{
     margin-top:10px;
-}
-
-.fill{
-    width:0%;
-    height:100%;
-    background:#ff4fd8;
-    animation:load 1.5s forwards;
-}
-
-@keyframes load{
-    to{width:100%}
-}
-
-@keyframes fadeOut{
-    to{opacity:0;visibility:hidden}
+    font-size:12px;
+    color:#666;
 }
 </style>
 
 </head>
 <body>
 
-<div class="loader">
-    <div>Загрузка кадровой системы...</div>
-    <div class="bar"><div class="fill"></div></div>
-</div>
-
 <div class="box">
-    <h2>Вход</h2>
-    <form method="POST" action="/login">
-        <input name="name" placeholder="Введите имя">
-        <button>Войти</button>
-    </form>
+
+<h2>Вход в систему</h2>
+<div class="dev">Разработчик Vovchik</div>
+
+<form method="POST" action="/login">
+    <input name="name" placeholder="Введите имя">
+    <button>Войти</button>
+</form>
+
+<div class="small">Добро пожаловать 👋</div>
+
 </div>
 
 </body>
