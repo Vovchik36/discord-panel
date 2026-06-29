@@ -8,66 +8,97 @@
 body{
     margin:0;
     font-family:Arial;
-    background:#0f1115;
+    background:linear-gradient(135deg,#0a0a0f,#120018);
     color:#fff;
     display:flex;
     justify-content:center;
+    animation:bgMove 10s infinite alternate;
+}
+
+@keyframes bgMove{
+    from{filter:hue-rotate(0deg);}
+    to{filter:hue-rotate(25deg);}
 }
 
 .box{
-    width:820px;
+    width:850px;
     margin:40px;
-    background:#171a21;
+    background:rgba(20,20,30,0.9);
     padding:24px;
-    border-radius:16px;
+    border-radius:18px;
+    box-shadow:0 0 30px rgba(140,0,255,0.3);
+    animation:fadeIn .6s ease;
+}
+
+@keyframes fadeIn{
+    from{opacity:0; transform:translateY(20px);}
+    to{opacity:1; transform:translateY(0);}
 }
 
 h2{
     text-align:center;
+    color:#c084ff;
 }
 
 label{
     display:block;
     margin-top:14px;
+    color:#ddd;
 }
 
-input,select,button{
+input,select{
     width:100%;
     padding:12px;
     border:none;
     border-radius:10px;
     margin-top:6px;
-    background:#232833;
+    background:#1a1a25;
     color:#fff;
-    box-sizing:border-box;
+    outline:none;
+    transition:.2s;
+}
+
+input:focus,select:focus{
+    box-shadow:0 0 10px #a855f7;
+    transform:scale(1.01);
 }
 
 button{
-    background:#5865F2;
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    margin-top:10px;
+    background:linear-gradient(90deg,#7c3aed,#a855f7);
+    color:#fff;
+    font-weight:bold;
     cursor:pointer;
     transition:.2s;
 }
 
 button:hover{
-    opacity:.9;
+    transform:scale(1.02);
+    box-shadow:0 0 15px #a855f7;
 }
 
 .copy{
-    background:#2ecc71;
-    margin-top:8px;
+    background:linear-gradient(90deg,#22c55e,#16a34a);
 }
 
 #loading{
     display:none;
     margin-top:10px;
+    color:#c084ff;
+    text-align:center;
 }
 
 #out{
     margin-top:15px;
-    background:#10131a;
+    background:#0e0e14;
     padding:14px;
     border-radius:10px;
     white-space:pre-wrap;
+    box-shadow:0 0 10px rgba(168,85,247,0.2);
 }
 
 .rem{
@@ -75,18 +106,29 @@ button:hover{
     align-items:center;
     gap:8px;
     margin-top:8px;
+    font-size:14px;
+    color:#aaa;
 }
 
 .rem input{
     width:auto;
+    transform:scale(1.2);
+    cursor:pointer;
 }
 
 .online-box{
     margin-top:20px;
     text-align:center;
-    color:#00ff66;
     font-size:18px;
     font-weight:bold;
+    color:#22c55e;
+    animation:pulse 1.5s infinite;
+}
+
+@keyframes pulse{
+    0%{opacity:1;}
+    50%{opacity:.5;}
+    100%{opacity:1;}
 }
 </style>
 
@@ -98,21 +140,26 @@ button:hover{
 <h2>Кадровый аудит</h2>
 
 <label>Discord ID (свой)</label>
-<input id="id1" placeholder="Введите свой Discord ID">
+<input id="id1">
 
 <div class="rem">
-<input type="checkbox" id="remember">
-<span>Запомнить мой Discord ID</span>
+<input type="checkbox" id="rememberId">
+<span>Запомнить Discord ID</span>
 </div>
 
 <label>Static (свой)</label>
-<input id="st1" placeholder="Введите свой Static">
+<input id="st1">
+
+<div class="rem">
+<input type="checkbox" id="rememberStatic">
+<span>Запомнить Static</span>
+</div>
 
 <label>Discord ID (другой)</label>
-<input id="id2" placeholder="Введите Discord ID">
+<input id="id2">
 
 <label>Static (другой)</label>
-<input id="st2" placeholder="Введите Static">
+<input id="st2">
 
 <label>Действие</label>
 <select id="action">
@@ -124,51 +171,53 @@ button:hover{
 
 <label>Ранг</label>
 <select id="rank">
-<option>1 ранг</option>
-<option>2 ранг</option>
-<option>3 ранг</option>
-<option>4 ранг</option>
-<option>5 ранг</option>
-<option>6 ранг</option>
-<option>7 ранг</option>
-<option>8 ранг</option>
-<option>9 ранг</option>
-<option>10 ранг</option>
-<option>11 ранг</option>
-<option>12 ранг</option>
-<option>13 ранг</option>
-<option>14 ранг</option>
-<option>15 ранг</option>
+<option>1 ранг</option><option>2</option><option>3</option>
+<option>4</option><option>5</option><option>6</option>
+<option>7</option><option>8</option><option>9</option>
+<option>10</option><option>11</option><option>12</option>
+<option>13</option><option>14</option><option>15</option>
 </select>
 
 <label>Причина</label>
 <input id="reason">
 
 <button onclick="gen()">Сгенерировать</button>
-
-<div id="loading">Пожалуйста, подождите...</div>
-
 <button class="copy" onclick="copyText()">Копировать</button>
+
+<div id="loading">Загрузка...</div>
 
 <div id="out"></div>
 
 <div class="online-box">
-🟢 Онлайн на сайте:
-<span id="onlineCount">0</span>
+🟢 Онлайн: <span id="onlineCount">0</span>
 </div>
 
 </div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+const socket = io();
+
+socket.on("online",(count)=>{
+    document.getElementById("onlineCount").textContent = count;
+});
+</script>
 
 <script>
 window.onload = () => {
 
-    const saved = localStorage.getItem("myDiscordId");
+    const id = localStorage.getItem("discordId");
+    const st = localStorage.getItem("static");
 
-    if(saved){
-        document.getElementById("id1").value = saved;
-        document.getElementById("remember").checked = true;
+    if(id){
+        id1.value = id;
+        rememberId.checked = true;
     }
 
+    if(st){
+        st1.value = st;
+        rememberStatic.checked = true;
+    }
 };
 
 function gen(){
@@ -178,11 +227,15 @@ function gen(){
 
     setTimeout(()=>{
 
-        if(remember.checked){
-            localStorage.setItem("myDiscordId", id1.value);
-        }else{
-            localStorage.removeItem("myDiscordId");
-        }
+        if(rememberId.checked)
+            localStorage.setItem("discordId", id1.value);
+        else
+            localStorage.removeItem("discordId");
+
+        if(rememberStatic.checked)
+            localStorage.setItem("static", st1.value);
+        else
+            localStorage.removeItem("static");
 
         out.textContent =
 `<@${id1.value}> | ${st1.value}
@@ -194,31 +247,13 @@ function gen(){
 
         loading.style.display = "none";
 
-    },1000);
-
+    },700);
 }
 
 function copyText(){
-
     navigator.clipboard.writeText(out.textContent);
-
     alert("Скопировано!");
-
 }
-</script>
-
-<script src="/socket.io/socket.io.js"></script>
-
-<script>
-
-const socket = io();
-
-socket.on("online",(count)=>{
-
-    document.getElementById("onlineCount").textContent = count;
-
-});
-
 </script>
 
 </body>
