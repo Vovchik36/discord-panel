@@ -2,56 +2,74 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>Panel</title>
+<title>Кадровая панель</title>
 
 <style>
 body{
     margin:0;
     font-family:Arial;
-    background:linear-gradient(135deg,#000,#1a001f);
+    background:linear-gradient(135deg,#0a0a0f,#120018);
     color:#fff;
     display:flex;
     justify-content:center;
+    animation:bgMove 10s infinite alternate;
+}
+
+@keyframes bgMove{
+    from{filter:hue-rotate(0deg);}
+    to{filter:hue-rotate(25deg);}
 }
 
 .box{
     width:850px;
     margin:40px;
-    background:rgba(255,255,255,0.05);
+    background:rgba(20,20,30,0.9);
     padding:24px;
     border-radius:18px;
-    backdrop-filter:blur(10px);
-    box-shadow:0 0 30px rgba(255,0,150,0.2);
+    box-shadow:0 0 30px rgba(140,0,255,0.3);
+    animation:fadeIn .6s ease;
+}
+
+@keyframes fadeIn{
+    from{opacity:0; transform:translateY(20px);}
+    to{opacity:1; transform:translateY(0);}
 }
 
 h2{
-    color:#ff4fd8;
     text-align:center;
+    color:#c084ff;
+}
+
+label{
+    display:block;
+    margin-top:14px;
+    color:#ddd;
 }
 
 input,select{
     width:100%;
     padding:12px;
-    margin-top:8px;
     border:none;
     border-radius:10px;
-    background:#111;
+    margin-top:6px;
+    background:#1a1a25;
     color:#fff;
+    outline:none;
     transition:.2s;
 }
 
 input:focus,select:focus{
-    transform:scale(1.02);
-    box-shadow:0 0 10px #ff4fd8;
+    box-shadow:0 0 10px #a855f7;
+    transform:scale(1.01);
 }
 
 button{
     width:100%;
     padding:12px;
-    margin-top:10px;
     border:none;
     border-radius:10px;
-    background:linear-gradient(90deg,#ff00aa,#7c3aed);
+    margin-top:10px;
+    background:linear-gradient(90deg,#7c3aed,#a855f7);
     color:#fff;
     font-weight:bold;
     cursor:pointer;
@@ -60,49 +78,117 @@ button{
 
 button:hover{
     transform:scale(1.02);
+    box-shadow:0 0 15px #a855f7;
+}
+
+.copy{
+    background:linear-gradient(90deg,#22c55e,#16a34a);
+}
+
+#loading{
+    display:none;
+    margin-top:10px;
+    color:#c084ff;
+    text-align:center;
 }
 
 #out{
     margin-top:15px;
-    background:#111;
-    padding:12px;
+    background:#0e0e14;
+    padding:14px;
     border-radius:10px;
     white-space:pre-wrap;
+    box-shadow:0 0 10px rgba(168,85,247,0.2);
 }
 
-.online{
+.rem{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-top:8px;
+    font-size:14px;
+    color:#aaa;
+}
+
+.rem input{
+    width:auto;
+    transform:scale(1.2);
+    cursor:pointer;
+}
+
+.online-box{
     margin-top:20px;
     text-align:center;
-    color:#00ff88;
+    font-size:18px;
+    font-weight:bold;
+    color:#22c55e;
+    animation:pulse 1.5s infinite;
+}
+
+@keyframes pulse{
+    0%{opacity:1;}
+    50%{opacity:.5;}
+    100%{opacity:1;}
 }
 </style>
-</head>
 
+</head>
 <body>
 
 <div class="box">
 
 <h2>Кадровый аудит</h2>
 
-<input id="id1" placeholder="Discord ID">
-<input id="st1" placeholder="Static">
-<input id="id2" placeholder="Discord ID (другой)">
-<input id="st2" placeholder="Static (другой)">
+<label>Discord ID (свой)</label>
+<input id="id1">
 
+<div class="rem">
+<input type="checkbox" id="rememberId">
+<span>Запомнить Discord ID</span>
+</div>
+
+<label>Static (свой)</label>
+<input id="st1">
+
+<div class="rem">
+<input type="checkbox" id="rememberStatic">
+<span>Запомнить Static</span>
+</div>
+
+<label>Discord ID (другой)</label>
+<input id="id2">
+
+<label>Static (другой)</label>
+<input id="st2">
+
+<label>Действие</label>
 <select id="action">
 <option>Повышение</option>
 <option>Понижение</option>
 <option>Увольнение</option>
+<option>Назначение</option>
 </select>
 
-<input id="reason" placeholder="Причина">
+<label>Ранг</label>
+<select id="rank">
+<option>1 ранг</option><option>2</option><option>3</option>
+<option>4</option><option>5</option><option>6</option>
+<option>7</option><option>8</option><option>9</option>
+<option>10</option><option>11</option><option>12</option>
+<option>13</option><option>14</option><option>15</option>
+</select>
+
+<label>Причина</label>
+<input id="reason">
 
 <button onclick="gen()">Сгенерировать</button>
-<button onclick="copy()">Копировать</button>
+<button class="copy" onclick="copyText()">Копировать</button>
+
+<div id="loading">Загрузка...</div>
 
 <div id="out"></div>
 
-<div class="online">
+<div class="online-box">
 🟢 Онлайн: <span id="onlineCount">0</span>
 </div>
 
@@ -111,22 +197,62 @@ button:hover{
 <script src="/socket.io/socket.io.js"></script>
 <script>
 const socket = io();
-socket.on("online",(c)=>{
-    onlineCount.textContent = c;
+
+socket.on("online",(count)=>{
+    document.getElementById("onlineCount").textContent = count;
 });
+</script>
+
+<script>
+window.onload = () => {
+
+    const id = localStorage.getItem("discordId");
+    const st = localStorage.getItem("static");
+
+    if(id){
+        id1.value = id;
+        rememberId.checked = true;
+    }
+
+    if(st){
+        st1.value = st;
+        rememberStatic.checked = true;
+    }
+};
 
 function gen(){
-out.textContent =
-`${id1.value} | ${st1.value}
-${id2.value} | ${st2.value}
 
-${action.value}
-${reason.value}`;
+    loading.style.display = "block";
+    out.textContent = "";
+
+    setTimeout(()=>{
+
+        if(rememberId.checked)
+            localStorage.setItem("discordId", id1.value);
+        else
+            localStorage.removeItem("discordId");
+
+        if(rememberStatic.checked)
+            localStorage.setItem("static", st1.value);
+        else
+            localStorage.removeItem("static");
+
+        out.textContent =
+`<@${id1.value}> | ${st1.value}
+<@${id2.value}> | ${st2.value}
+
+Действие: ${action.value}
+Ранг: ${rank.value}
+Причина: ${reason.value}`;
+
+        loading.style.display = "none";
+
+    },700);
 }
 
-function copy(){
-navigator.clipboard.writeText(out.textContent);
-alert("Скопировано!");
+function copyText(){
+    navigator.clipboard.writeText(out.textContent);
+    alert("Скопировано!");
 }
 </script>
 
